@@ -1,0 +1,5 @@
+functions-framework==3.*
+google-cloud-firestore==2.11.0
+google-cloud-storage==2.10.0
+google-auth==2.23.2
+flask==2.3.2
