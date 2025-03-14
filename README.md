@@ -11,7 +11,7 @@ Cosmos is a cost model designed to analyze and optimize serverless workflow cost
 - **Performance vs. Cost Trade-offs**: Integrates Service Level Objectives (SLOs) and budget constraints for optimized function placement.
 
 ## Repository Contents
-This repository contains the implementation of Cosmos, including:
+This repository contains the serverless functions used in the analysis of Cosmos. This includes:
 
 - **Data Retrieval**: Implemented using AWS Lambda with API Gateway for HTTP endpoint management, DynamoDB for structured data storage, and Amazon S3 for object storage. In GCP, Cloud Functions are used along with Firestore for document storage and Cloud Storage for object retrieval.
 - **Data Processing**: AWS uses Lambda for compute tasks, API Gateway for request handling, and AWS Glue for ETL processing, while GCP utilizes Cloud Functions and Dataflow for similar ETL operations.
