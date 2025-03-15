@@ -83,7 +83,7 @@ plt.plot(pareto_points[:, 0], pareto_points[:, 1], 'r--', label="Pareto Front")
 
 plt.xlabel("Latency (ms)")
 plt.ylabel("Cost (USD per 1M requests)")
-plt.title("Cost vs. Latency for Different Configurations")
+plt.title("Cosmos Performance Cost Tradeoff Model highlighting the optimal tradeoff between latency and costs")
 plt.legend()
 plt.grid(True)
 plt.show()
