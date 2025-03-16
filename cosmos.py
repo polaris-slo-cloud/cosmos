@@ -1,4 +1,3 @@
-# Re-import necessary libraries after execution state reset
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial import ConvexHull
@@ -86,6 +85,10 @@ pareto_points = pareto_front(points)
 # Compute Utopia point (Ideal min latency & min cost)
 utopia_point = [min(points[:, 0]), min(points[:, 1])]
 
+# SLO constraints
+slo_budget = 50  # USD
+slo_latency = 75  # ms
+
 # Plot configurations
 plt.figure(figsize=(10, 6))
 colors = {"x86": "orange", "ARM": "red", "L@E": "blue", "Space": "purple", "GCP": "black"}
@@ -101,6 +104,14 @@ plt.plot(pareto_points[:, 0], pareto_points[:, 1], 'r--', label="Pareto Front")
 
 # Plot Utopia point
 plt.scatter(utopia_point[0], utopia_point[1], color='green', marker='*', s=150, label="Utopia Point")
+
+# Draw SLO lines
+plt.axhline(y=slo_budget, color='gray', linestyle='dotted', linewidth=1)
+plt.axvline(x=slo_latency, color='gray', linestyle='dotted', linewidth=1)
+
+# Annotate SLO constraints on axes
+plt.text(plt.xlim()[0] + 5, slo_budget + 2, "Cost SLO (50 USD)", fontsize=10, color='gray')
+plt.text(slo_latency + 2, plt.ylim()[0] + 2, "Latency SLO (75 ms)", fontsize=10, color='gray', rotation=90)
 
 plt.xlabel("Latency (ms)")
 plt.ylabel("Cost (USD per 1M requests)")
