@@ -1,9 +1,10 @@
+# Re-import necessary libraries after execution state reset
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial import ConvexHull
 
 # Define platforms and workflows
-platforms = ["x86", "ARM", "L@E", "Space"]
+platforms = ["x86", "ARM", "L@E", "Space", "GCP"]
 workflows = ["Data Retrieval", "Data Processing", "Inference"]
 
 # Base latencies (ms) for AWS x86
@@ -13,7 +14,14 @@ base_latency = {
     "Inference": 84
 }
 
-# Latency adjustments
+# GCP Latency values
+gcp_latency = {
+    "Data Retrieval": 215,
+    "Data Processing": 274,
+    "Inference": 85
+}
+
+# Latency adjustments for AWS-based platforms
 latency_factors = {
     "x86": 1.0,
     "ARM": 1.1,  # ARM is 1.1x slower than x86
@@ -23,7 +31,7 @@ latency_factors = {
 
 # Compute adjusted latencies
 latency_data = {
-    wf: {pl: base_latency[wf] * latency_factors[pl] for pl in platforms}
+    wf: {pl: base_latency[wf] * latency_factors[pl] if pl != "GCP" else gcp_latency[wf] for pl in platforms}
     for wf in workflows
 }
 
@@ -34,7 +42,14 @@ base_cost = {
     "Inference": 17.3086
 }
 
-# Cost adjustments
+# GCP cost values
+gcp_cost = {
+    "Data Retrieval": 1.3324,
+    "Data Processing": 1.47029,
+    "Inference": 62.5884
+}
+
+# Cost adjustments for AWS-based platforms
 cost_factors = {
     "x86": 1.0,
     "ARM": 1.0,  # ARM has the same cost as x86
@@ -44,7 +59,7 @@ cost_factors = {
 
 # Compute adjusted costs
 cost_data = {
-    wf: {pl: base_cost[wf] * cost_factors[pl] for pl in platforms}
+    wf: {pl: base_cost[wf] * cost_factors[pl] if pl != "GCP" else gcp_cost[wf] for pl in platforms}
     for wf in workflows
 }
 
@@ -68,9 +83,12 @@ def pareto_front(points):
 
 pareto_points = pareto_front(points)
 
+# Compute Utopia point (Ideal min latency & min cost)
+utopia_point = [min(points[:, 0]), min(points[:, 1])]
+
 # Plot configurations
 plt.figure(figsize=(10, 6))
-colors = {"x86": "orange", "ARM": "red", "L@E": "blue", "Space": "purple"}
+colors = {"x86": "orange", "ARM": "red", "L@E": "blue", "Space": "purple", "GCP": "black"}
 markers = {"Data Retrieval": "o", "Data Processing": "s", "Inference": "D"}
 
 for i, (lat, cost) in enumerate(points):
@@ -81,9 +99,13 @@ for i, (lat, cost) in enumerate(points):
 # Plot Pareto front
 plt.plot(pareto_points[:, 0], pareto_points[:, 1], 'r--', label="Pareto Front")
 
+# Plot Utopia point
+plt.scatter(utopia_point[0], utopia_point[1], color='green', marker='*', s=150, label="Utopia Point")
+
 plt.xlabel("Latency (ms)")
 plt.ylabel("Cost (USD per 1M requests)")
-plt.title("Cosmos Performance Cost Tradeoff Model highlighting the optimal tradeoff between latency and costs")
+plt.title("Cost vs. Latency for Different Configurations (AWS & GCP)")
 plt.legend()
 plt.grid(True)
 plt.show()
+
